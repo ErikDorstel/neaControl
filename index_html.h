@@ -19,9 +19,10 @@ td     { text-align:right; }
 .x0    { background-color:#c2d5ed; padding:0.3em 0em; width:100%; font-size:1.4em; }
 .x1a   { background-color:#f0f0f0; padding:0.3em 0em; width:100%; font-size:1.4em; }
 .x1b   { background-color:#e0e0e0; padding:0.3em 0em; width:100%; font-size:1.4em; }
-.x2    { background-color:#e0e0e0; padding:0.3em 0em; width:48%; font-size:1.4em; }
+.x2    { background-color:#e0e0e0; padding:0.3em 0em; width:49%; font-size:1.4em; }
 .x3    { background-color:#e0e0e0; padding:0.3em 0em; width:32%; font-size:1.4em; }
 .x4    { background-color:#e0e0e0; padding:0.3em 0em; width:24%; font-size:1.4em; }
+.but   { background-color:#f0f0f0; padding:0.1em 0.4em; }
 </style>
 <script>
 
@@ -34,8 +35,8 @@ function doDisplay() {
   if (cond2==0) { id("nea").style.backgroundColor="#E09090"; } else { id("nea").style.backgroundColor="#90E090"; }
   id("peak1").innerHTML=peak1+" Vpeak"; id("rms1").innerHTML=rms1+" Vrms"; id("freq1").innerHTML=freq1+" Hz";
   id("peak2").innerHTML=peak2+" Vpeak"; id("rms2").innerHTML=rms2+" Vrms"; id("freq2").innerHTML=freq2+" Hz";
-  if (relay1==0) { id("relay1").innerHTML="not Starting"; id("relay1").style.backgroundColor="#e0e0e0"; } else { id("relay1").innerHTML="Starting"; id("relay1").style.backgroundColor="#FFE460"; }
-  if (relay2==0) { id("relay2").innerHTML="not Active"; id("relay2").style.backgroundColor="#e0e0e0"; } else { id("relay2").innerHTML="Active"; id("relay2").style.backgroundColor="#FFE460"; } }
+  if (relay1==0) { id("relay1").innerHTML="Idle"; id("relay1").style.backgroundColor="#e0e0e0"; } else { id("relay1").innerHTML="Starting"; id("relay1").style.backgroundColor="#FFE460"; }
+  if (relay2==0) { id("relay2").innerHTML="Idle"; id("relay2").style.backgroundColor="#e0e0e0"; } else { id("relay2").innerHTML="Active"; id("relay2").style.backgroundColor="#FFE460"; } }
 
 function getStatus() { requestAJAX("getVoltage"); requestAJAX("getRelay"); }
 
@@ -77,9 +78,9 @@ function id(id) { return document.getElementById(id); }
      <div class="x2" id="freq2"></div></div>
 <div><div class="x1a">Remote Switches</div></div>
 <div><div class="x2" id="relay1"></div>
-     <div class="x2" onclick="setRelay1();">Start Engine</div></div>
-<div><div class="x2" id="relay2"></div>
-     <div class="x2" onclick="setRelay2();">NEA Switchover</div></div>
+     <div class="x2" id="relay2"></div></div>
+<div><div class="x2" onclick="setRelay1();"><span class="but">Start Engine</span></div>
+     <div class="x2" onclick="setRelay2();"><span class="but">Switchover</span></div></div>
 </div>
 
 </body></html>
