@@ -40,7 +40,8 @@ void resetMeasure() {
 struct voltageStruct {
   double peak[2];
   double rms[2];
-  double frequency[2]; } voltage;
+  double frequency[2];
+  bool condition[2]; } voltage;
 
 void initMeasure() {
 
@@ -67,7 +68,7 @@ void measureWorker() {
     if (measure.rawCur<-1000 && measure.polarity>=0) { measure.polarity=-1; } }
 
   if (millis()>=measure.timer) {
-    double voltagePeak=(ads1115.computeVolts(measure.rawMax)-ads1115.computeVolts(measure.rawMin))*122;
+    double voltagePeak=(ads1115.computeVolts(measure.rawMax)-ads1115.computeVolts(measure.rawMin))*121;
     double voltageRMS=ads1115.computeVolts(measure.rawSum/measure.counter)*295;
     double voltageFrequency=0; if (measure.phases>2) { voltageFrequency=1000000/((double)measure.phaseDuration/(measure.phases-2)); }
     if (debug) {
@@ -80,5 +81,6 @@ void measureWorker() {
       voltage.peak[measure.channel]=voltagePeak;
       voltage.rms[measure.channel]=voltageRMS;
       voltage.frequency[measure.channel]=voltageFrequency;
+      if (voltagePeak>300 && voltagePeak<350 && voltageRMS>210 && voltageRMS<250 && voltageFrequency>48 && voltageFrequency<52) { voltage.condition[measure.channel]=true; } else { voltage.condition[measure.channel]=false; }
       if (measure.channel==0) { measure.channel=1; } else { measure.channel=0; } }
     resetMeasure(); } }

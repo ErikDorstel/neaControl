@@ -26,14 +26,16 @@ td     { text-align:right; }
 <script>
 
 function webUIinit() { ajaxObj=[];
-  peak1=0; rms1=0; freq1=0; peak2=0; rms2=0; freq2=0; relay1=0; relay2=0; doDisplay();
+  peak1=0; rms1=0; freq1=0; cond1=0; peak2=0; rms2=0; freq2=0; cond2=0; relay1=0; relay2=0; doDisplay();
   requestAJAX("getVoltage"); requestAJAX("getRelay"); window.setInterval("getStatus();",10000); }
 
 function doDisplay() {
-  id("peak1").innerHTML=peak1; id("rms1").innerHTML=rms1; id("freq1").innerHTML=freq1;
-  id("peak2").innerHTML=peak2; id("rms2").innerHTML=rms2; id("freq2").innerHTML=freq2;
-  if (relay1==0) { id("relay1").innerHTML="not Active"; } else { id("relay1").innerHTML="Active"; }
-  if (relay2==0) { id("relay2").innerHTML="not Starting"; } else { id("relay2").innerHTML="Starting"; } }
+  if (cond1==0) { id("evu").style.backgroundColor="#E09090"; } else { id("evu").style.backgroundColor="#90E090"; }
+  if (cond2==0) { id("nea").style.backgroundColor="#E09090"; } else { id("nea").style.backgroundColor="#90E090"; }
+  id("peak1").innerHTML=peak1+" Vpeak"; id("rms1").innerHTML=rms1+" Vrms"; id("freq1").innerHTML=freq1+" Hz";
+  id("peak2").innerHTML=peak2+" Vpeak"; id("rms2").innerHTML=rms2+" Vrms"; id("freq2").innerHTML=freq2+" Hz";
+  if (relay1==0) { id("relay1").innerHTML="not Starting"; id("relay1").style.backgroundColor="#e0e0e0"; } else { id("relay1").innerHTML="Starting"; id("relay1").style.backgroundColor="#FFE460"; }
+  if (relay2==0) { id("relay2").innerHTML="not Active"; id("relay2").style.backgroundColor="#e0e0e0"; } else { id("relay2").innerHTML="Active"; id("relay2").style.backgroundColor="#FFE460"; } }
 
 function getStatus() { requestAJAX("getVoltage"); requestAJAX("getRelay"); }
 
@@ -48,8 +50,10 @@ function requestAJAX(value) {
 function replyAJAX(event) {
   if (event.target.status==200) {
     if (event.target.url=="getVoltage") {
-      peak1=event.target.responseText.split(",")[0]; rms1=event.target.responseText.split(",")[1]; freq1=event.target.responseText.split(",")[2];
-      peak2=event.target.responseText.split(",")[3]; rms2=event.target.responseText.split(",")[4]; freq2=event.target.responseText.split(",")[5]; doDisplay(); }
+      peak1=event.target.responseText.split(",")[0]; rms1=event.target.responseText.split(",")[1];
+      freq1=event.target.responseText.split(",")[2]; cond1=event.target.responseText.split(",")[3];
+      peak2=event.target.responseText.split(",")[4]; rms2=event.target.responseText.split(",")[5];
+      freq2=event.target.responseText.split(",")[6]; cond2=event.target.responseText.split(",")[7]; doDisplay(); }
     else if (event.target.url=="getRelay" || event.target.url.startsWith("setRelay")) {
       relay1=event.target.responseText.split(",")[0]; relay2=event.target.responseText.split(",")[1]; doDisplay(); } } }
 
@@ -63,27 +67,19 @@ function id(id) { return document.getElementById(id); }
 
 <div>
 <div><div class="x1a">Voltages</div></div>
-<div><div class="x2">EVU</div>
-     <div class="x2">NEA</div><div>
-<div><div class="x4" id="peak1"></div>
-     <div class="x4">Volt Peak</div>
-     <div class="x4" id="peak2"></div>
-     <div class="x4">Volt Peak</div></div>
-<div><div class="x4" id="rms1"></div>
-     <div class="x4">Volt RMS</div>
-     <div class="x4" id="rms2"></div>
-     <div class="x4">Volt RMS</div></div>
-<div><div class="x4" id="freq1"></div>
-     <div class="x4">Hertz</div>
-     <div class="x4" id="freq2"></div>
-     <div class="x4">Hertz</div></div>
+<div><div class="x2" id="evu">EVU</div>
+     <div class="x2" id="nea">NEA</div><div>
+<div><div class="x2" id="peak1"></div>
+     <div class="x2" id="peak2"></div></div>
+<div><div class="x2" id="rms1"></div>
+     <div class="x2" id="rms2"></div></div>
+<div><div class="x2" id="freq1"></div>
+     <div class="x2" id="freq2"></div></div>
 <div><div class="x1a">Remote Switches</div></div>
-<div><div class="x3">NEA switchover</div>
-     <div class="x3" id="relay1"></div>
-     <div class="x3" onclick="setRelay1();">Switch</div></div>
-<div><div class="x3">Start NEA Engine</div>
-     <div class="x3" id="relay2"></div>
-     <div class="x3" onclick="setRelay2();">Start</div></div>
+<div><div class="x2" id="relay1"></div>
+     <div class="x2" onclick="setRelay1();">Start Engine</div></div>
+<div><div class="x2" id="relay2"></div>
+     <div class="x2" onclick="setRelay2();">NEA Switchover</div></div>
 </div>
 
 </body></html>
