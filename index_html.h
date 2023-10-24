@@ -19,26 +19,36 @@ td     { text-align:right; }
 .x0    { background-color:#c2d5ed; padding:0.3em 0em; width:100%; font-size:1.4em; }
 .x1a   { background-color:#f0f0f0; padding:0.3em 0em; width:100%; font-size:1.4em; }
 .x1b   { background-color:#e0e0e0; padding:0.3em 0em; width:100%; font-size:1.4em; }
-.x2    { background-color:#e0e0e0; padding:0.3em 0em; width:49%; font-size:1.4em; }
+.x2    { background-color:#e0e0e0; padding:0.3em 0em; width:48%; font-size:1.4em; }
 .x3    { background-color:#e0e0e0; padding:0.3em 0em; width:32%; font-size:1.4em; }
 .x4    { background-color:#e0e0e0; padding:0.3em 0em; width:24%; font-size:1.4em; }
 .but   { background-color:#f0f0f0; padding:0.1em 0.4em; }
 </style>
 <script>
 
-function webUIinit() { ajaxObj=[];
+function webUIinit() {
+  ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
   peak1=0; rms1=0; freq1=0; cond1=0; peak2=0; rms2=0; freq2=0; cond2=0; relay1=0; relay2=0; locked=1; doDisplay();
   requestAJAX("getVoltage"); requestAJAX("getRelay"); window.setInterval("getStatus();",10000); }
 
 function doDisplay() {
-  if (cond1==0) { id("evu").style.backgroundColor="#E09090"; } else { id("evu").style.backgroundColor="#90E090"; }
-  if (cond2==0) { id("nea").style.backgroundColor="#E09090"; } else { id("nea").style.backgroundColor="#90E090"; }
+  if (cond1==0) { id("evu").style.backgroundColor=red; } else { id("evu").style.backgroundColor=green; }
+
+  if (cond2==0) { if (cond1==0) { id("nea").style.backgroundColor=red; } else { id("nea").style.backgroundColor=gray; } }
+  else { id("nea").style.backgroundColor=green; }
+
   id("peak1").innerHTML=peak1+" Vpeak"; id("rms1").innerHTML=rms1+" Vrms"; id("freq1").innerHTML=freq1+" Hz";
   id("peak2").innerHTML=peak2+" Vpeak"; id("rms2").innerHTML=rms2+" Vrms"; id("freq2").innerHTML=freq2+" Hz";
-  if (relay1==0) { id("relay1").innerHTML="Idle"; id("relay1").style.backgroundColor="#e0e0e0"; } else { id("relay1").innerHTML="Starting"; id("relay1").style.backgroundColor="#FFE460"; }
-  if (relay2==0) { id("relay2").innerHTML="Idle"; id("relay2").style.backgroundColor="#e0e0e0"; } else { id("relay2").innerHTML="Active"; id("relay2").style.backgroundColor="#FFE460"; }
-  if (locked==0) { id("locked").innerHTML="Unlocked"; id("locked").style.backgroundColor="#e0e0e0"; id("lock").innerHTML="Lock"; }
-  else { id("locked").innerHTML="Locked"; id("locked").style.backgroundColor="#E09090"; id("lock").innerHTML="Unlock"; } }
+
+  if (relay1==0) { if (cond2==1) { id("relay1").innerHTML="Running"; id("relay1").style.backgroundColor=green; }
+    else { id("relay1").innerHTML="Idle"; if (cond1==0) { id("relay1").style.backgroundColor=red; } else { id("relay1").style.backgroundColor=gray; } } }
+  else { id("relay1").innerHTML="Starting"; id("relay1").style.backgroundColor=yellow; }
+
+  if (relay2==0) { id("relay2").innerHTML="Idle"; if (cond1==0) { id("relay2").style.backgroundColor=red; } else { id("relay2").style.backgroundColor=gray; } }
+  else { id("relay2").innerHTML="Active"; if (cond2==0) { id("relay2").style.backgroundColor=red; } else { id("relay2").style.backgroundColor=green; } }
+
+  if (locked==0) { id("locked").innerHTML="Unlocked"; id("locked").style.backgroundColor=gray; id("lock").innerHTML="Lock"; }
+  else { id("locked").innerHTML="Locked"; id("locked").style.backgroundColor=blue; id("lock").innerHTML="Unlock"; } }
 
 function getStatus() { requestAJAX("getVoltage"); requestAJAX("getRelay"); }
 
