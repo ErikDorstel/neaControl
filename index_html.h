@@ -81,7 +81,7 @@ function id(id) { return document.getElementById(id); }
 </script></head><body onload="webUIinit();">
 
 <div><div class="x0a">neaControl</div></div>
-<div><div class="x0b">&nbsp;</div></div>
+<div><div class="x0b">Emergency power system</div></div>
 
 <div>
 <div><div class="x1a">Voltages</div></div>
