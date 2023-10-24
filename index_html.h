@@ -51,7 +51,7 @@ function doDisplay() {
   if (locked==0) { id("locked").innerHTML="Unlocked"; id("locked").style.backgroundColor=gray; id("lock").innerHTML="Lock"; }
   else { id("locked").innerHTML="Locked"; id("locked").style.backgroundColor=blue; id("lock").innerHTML="Unlock"; }
 
-  id("secret").innerHTML="Secret: "+"*".repeat(secret.length); }
+  id("secret").innerHTML="Secret: "+"X".repeat(secret.length); }
 
 function getStatus() { requestAJAX("getVoltage"); requestAJAX("getRelay"); }
 
