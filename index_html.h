@@ -22,13 +22,14 @@ td     { text-align:right; }
 .x2    { background-color:#e0e0e0; padding:0.3em 0em; width:48%; font-size:1.4em; }
 .x3    { background-color:#e0e0e0; padding:0.3em 0em; width:32%; font-size:1.4em; }
 .x4    { background-color:#e0e0e0; padding:0.3em 0em; width:24%; font-size:1.4em; }
+.x5    { background-color:#e0e0e0; padding:0.3em 0em; width:19%; font-size:1.4em; }
 .but   { background-color:#f0f0f0; padding:0.1em 0.4em; }
 </style>
 <script>
 
 function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
-  peak1=0; rms1=0; freq1=0; cond1=0; peak2=0; rms2=0; freq2=0; cond2=0; relay1=0; relay2=0; locked=1; doDisplay();
+  peak1=0; rms1=0; freq1=0; cond1=0; peak2=0; rms2=0; freq2=0; cond2=0; relay1=0; relay2=0; locked=1; secret=""; doDisplay();
   requestAJAX("getVoltage"); requestAJAX("getRelay"); window.setInterval("getStatus();",10000); }
 
 function doDisplay() {
@@ -48,17 +49,20 @@ function doDisplay() {
   else { id("relay2").innerHTML="Active"; if (cond2==0) { id("relay2").style.backgroundColor=red; } else { id("relay2").style.backgroundColor=green; } }
 
   if (locked==0) { id("locked").innerHTML="Unlocked"; id("locked").style.backgroundColor=gray; id("lock").innerHTML="Lock"; }
-  else { id("locked").innerHTML="Locked"; id("locked").style.backgroundColor=blue; id("lock").innerHTML="Unlock"; } }
+  else { id("locked").innerHTML="Locked"; id("locked").style.backgroundColor=blue; id("lock").innerHTML="Unlock"; }
+
+  id("secret").innerHTML="Secret: "+"*".repeat(secret.length); }
 
 function getStatus() { requestAJAX("getVoltage"); requestAJAX("getRelay"); }
 
-function toggleRelay1() { if (locked==0) { setLock(); if (relay1==0) { requestAJAX("setRelay,0,1"); setRelay1Timer(); } else { requestAJAX("setRelay,0,0"); } } }
+function toggleRelay1() { if (locked==0) { setLock(); if (relay1==0) { requestAJAX("setRelay,0,1,"+secret); setRelay1Timer(); } else { requestAJAX("setRelay,0,0,"+secret); } } }
 function setRelay1Timer() { if (typeof relay1Timer!=='undefined' ) { window.clearInterval(relay1Timer); } relay1Timer=window.setTimeout("unsetRelay1();",2000); }
-function unsetRelay1() { requestAJAX("setRelay,0,0"); }
-function toggleRelay2() { if (locked==0) { setLock(); if (relay2==0) { requestAJAX("setRelay,1,1"); } else { requestAJAX("setRelay,1,0"); } } }
+function unsetRelay1() { requestAJAX("setRelay,0,0,"+secret); }
+function toggleRelay2() { if (locked==0) { setLock(); if (relay2==0) { requestAJAX("setRelay,1,1,"+secret); } else { requestAJAX("setRelay,1,0,"+secret); } } }
 function toggleLock() { if (locked==0) { locked=1; } else { locked=0; setLockTimer(); } doDisplay(); }
-function setLockTimer() { if (typeof lockTimer!=='undefined' ) { window.clearInterval(lockTimer); } lockTimer=window.setTimeout("setLock();",5000); }
+function setLockTimer() { if (typeof lockTimer!=='undefined' ) { window.clearInterval(lockTimer); } lockTimer=window.setTimeout("setLock();",2000); }
 function setLock() { locked=1; doDisplay(); }
+function setChar(value) { if (locked==0) { secret+=value; if (secret.length>6) { secret=""; } doDisplay(); setLockTimer() } }
 
 function requestAJAX(value) {
   ajaxObj[value]=new XMLHttpRequest; ajaxObj[value].url=value; ajaxObj[value].open("GET",value,true);
@@ -93,6 +97,17 @@ function id(id) { return document.getElementById(id); }
      <div class="x2" id="rms2"></div></div>
 <div><div class="x2" id="freq1"></div>
      <div class="x2" id="freq2"></div></div>
+<div><div class="x1a" id="secret"></div></div>
+<div><div class="x5" onclick="setChar('0');"><span class="but">0</span></div>
+     <div class="x5" onclick="setChar('1');"><span class="but">1</span></div>
+     <div class="x5" onclick="setChar('2');"><span class="but">2</span></div>
+     <div class="x5" onclick="setChar('3');"><span class="but">3</span></div>
+     <div class="x5" onclick="setChar('4');"><span class="but">4</span></div></div>
+<div><div class="x5" onclick="setChar('5');"><span class="but">5</span></div>
+     <div class="x5" onclick="setChar('6');"><span class="but">6</span></div>
+     <div class="x5" onclick="setChar('7');"><span class="but">7</span></div>
+     <div class="x5" onclick="setChar('8');"><span class="but">8</span></div>
+     <div class="x5" onclick="setChar('9');"><span class="but">9</span></div></div>
 <div><div class="x1a">Remote Switches</div></div>
 <div><div class="x2" id="relay1"></div>
      <div class="x2" id="relay2"></div></div>
