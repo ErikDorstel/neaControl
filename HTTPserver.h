@@ -4,6 +4,7 @@
 EthernetServer tcpServer(80);
 
 #include "index_html.h"
+#include "control_html.h"
 #include "HTTProot.h"
 
 void initHTTPServer() { tcpServer.begin(); }
