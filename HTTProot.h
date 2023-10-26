@@ -21,7 +21,12 @@ String httpServerRequest(String request) {
 
   else if (request.indexOf("/setRelay")>=0) {
     int a=request.indexOf(",")+1; int b=request.indexOf(",",a)+1;
-    if (a>0 && b>0) { setRelay(request.substring(a,b-1).toInt(),request.substring(b).toInt()); }
+    if (a>0 && b>0) {
+      bool allowed=true; int channel=request.substring(a,b-1).toInt(); int state=request.substring(b).toInt();
+      if (channel==0 && state==1 && voltage.condition[1]==1 && checkCondition==true) { allowed=false; }
+      if (channel==1 && state==0 && voltage.condition[0]==0 && checkCondition==true) { allowed=false; }
+      if (channel==1 && state==1 && voltage.condition[1]==0 && checkCondition==true) { allowed=false; }
+      if (allowed) { setRelay(channel,state); } }
     response+=String(relay.state[0]) + ",";
     response+=String(relay.state[1]); }
 

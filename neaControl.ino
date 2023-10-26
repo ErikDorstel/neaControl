@@ -1,4 +1,5 @@
 bool debug=true;
+bool checkCondition=true;
 int secret=123456;
 bool ethDHCP=true;
 uint8_t ethIP[]={192,168,100,100};
