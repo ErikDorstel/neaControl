@@ -29,7 +29,7 @@ td     { text-align:right; }
 
 function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
-  secret=""; challenge=""; getChallenge(); window.setInterval("getChallenge();",9000); doDisplay(); }
+  secret=""; challenge=""; doDisplay(); }
 
 function doDisplay() {
   id("secret").innerHTML="Secret: "+"X".repeat(secret.length); }
@@ -37,7 +37,7 @@ function doDisplay() {
 function getChallenge() { requestAJAX("getChallenge"); }
 
 function doClear() { secret=""; doDisplay(); }
-function doLogin() { location.replace('/'+String(secret^challenge)+"/"); }
+function doLogin() { getChallenge(); }
 function setChar(value) { secret+=value; if (secret.length>10) { secret=""; } doDisplay(); }
 
 function requestAJAX(value) {
@@ -47,7 +47,7 @@ function requestAJAX(value) {
 
 function replyAJAX(event) {
   if (event.target.status==200) {
-    if (event.target.url=="getChallenge") { challenge=event.target.responseText.split(",")[0]; } } }
+    if (event.target.url=="getChallenge") { challenge=event.target.responseText.split(",")[0]; location.replace('/'+String(secret^challenge)+"/"); } } }
 
 function mapValue(value,inMin,inMax,outMin,outMax) { return (value-inMin)*(outMax-outMin)/(inMax-inMin)+outMin; }
 function id(id) { return document.getElementById(id); }

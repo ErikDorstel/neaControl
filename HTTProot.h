@@ -1,6 +1,6 @@
 String httpServerRequest(String request) {
   String response="";
-  static String challenge="733616955";
+  static String challenge=String(random(1000000000));
   static uint64_t challengeTimer=millis();
 
   if (request.indexOf("/getChallenge")>=0) { response=String(random(1000000000)); challenge=response; challengeTimer=millis(); }
@@ -25,7 +25,7 @@ String httpServerRequest(String request) {
     response+=String(relay.state[0])+",";
     response+=String(relay.state[1]); }
 
-  else if (request.indexOf("/" + String(424242^challenge.toInt()) + "/")>=0 && millis()<challengeTimer+10000) { response=control_html; }
+  else if (request.indexOf("/" + String(secret^challenge.toInt()) + "/")>=0 && millis()<challengeTimer+10000) { response=control_html; }
 
   else { response=index_html; }
 

@@ -30,7 +30,7 @@ td     { text-align:right; }
 function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
   peak1=0; rms1=0; freq1=0; cond1=0; peak2=0; rms2=0; freq2=0; cond2=0; relay1=0; relay2=0; locked=1; doDisplay();
-  getStatus(); window.setInterval("getStatus();",10000); }
+  getStatus(); window.setInterval("getStatus();",10000); setLogoutTimer(); }
 
 function doDisplay() {
   if (cond1==0) { id("evu").style.backgroundColor=red; } else { id("evu").style.backgroundColor=green; }
@@ -57,9 +57,11 @@ function toggleRelay1() { if (locked==0) { setLock(); if (relay1==0) { requestAJ
 function setRelay1Timer() { if (typeof relay1Timer!=='undefined' ) { window.clearInterval(relay1Timer); } relay1Timer=window.setTimeout("unsetRelay1();",2000); }
 function unsetRelay1() { requestAJAX("setRelay,0,0"); }
 function toggleRelay2() { if (locked==0) { setLock(); if (relay2==0) { requestAJAX("setRelay,1,1"); } else { requestAJAX("setRelay,1,0"); } } }
-function toggleLock() { if (locked==0) { locked=1; } else { locked=0; setLockTimer(); } doDisplay(); }
+function toggleLock() { if (locked==0) { locked=1; } else { locked=0; setLockTimer(); setLogoutTimer(); } doDisplay(); }
 function setLockTimer() { if (typeof lockTimer!=='undefined' ) { window.clearInterval(lockTimer); } lockTimer=window.setTimeout("setLock();",2000); }
 function setLock() { locked=1; doDisplay(); }
+function setLogoutTimer() { if (typeof logoutTimer!=='undefined' ) { window.clearInterval(logoutTimer); } logoutTimer=window.setTimeout("doLogout();",5*60000); }
+function doLogout() { location.reload(); }
 
 function requestAJAX(value) {
   ajaxObj[value]=new XMLHttpRequest; ajaxObj[value].url=value; ajaxObj[value].open("GET",value,true);

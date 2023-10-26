@@ -1,4 +1,5 @@
 bool debug=true;
+int secret=123456;
 
 #include "relay.h"
 #include "measure.h"
