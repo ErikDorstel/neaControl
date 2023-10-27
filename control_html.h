@@ -13,7 +13,7 @@ html   { font-family:Arial; }
 div    { background-color:#e0e0e0; color:#000000; border:0px; padding:0px; margin:0px; text-align:center; width:100%; user-select:none; display:inline-block; }
 select { background-color:#f0f0f0; color:#000000; font-size:1.0em; border:0px; padding:0px; margin:0px; }
 table  { margin-left:auto; margin-right:auto; }
-td     { text-align:right; }
+td     { text-align:right; padding:0.2em 0em; }
 .x0a   { background-color:#c2d5ed; padding:0.2em 0em 0.1em; width:100%; font-size:1.5em; }
 .x0b   { background-color:#c2d5ed; padding:0.1em 0em 0.2em; width:100%; font-size:1.2em; }
 .x0    { background-color:#c2d5ed; padding:0.3em 0em; width:100%; font-size:1.4em; }
@@ -24,6 +24,7 @@ td     { text-align:right; }
 .x4    { background-color:#e0e0e0; padding:0.3em 0em; width:24%; font-size:1.4em; }
 .x5    { background-color:#e0e0e0; padding:0.3em 0em; width:19%; font-size:1.4em; }
 .but   { background-color:#f0f0f0; padding:0.1em 0.4em; }
+.left  { text-align:left; }
 </style>
 <script>
 
@@ -38,8 +39,8 @@ function doDisplay() {
   if (cond2==0) { if (cond1==0) { id("nea").style.backgroundColor=red; } else { id("nea").style.backgroundColor=gray; } }
   else { id("nea").style.backgroundColor=green; }
 
-  id("peak1").innerHTML=peak1+" Vpeak"; id("rms1").innerHTML=rms1+" Vrms"; id("freq1").innerHTML=freq1+" Hz";
-  id("peak2").innerHTML=peak2+" Vpeak"; id("rms2").innerHTML=rms2+" Vrms"; id("freq2").innerHTML=freq2+" Hz";
+  id("peak1").innerHTML=peak1; id("rms1").innerHTML=rms1; id("freq1").innerHTML=freq1;
+  id("peak2").innerHTML=peak2; id("rms2").innerHTML=rms2; id("freq2").innerHTML=freq2;
 
   if (relay1==0) { if (cond2==1) { id("relay1").innerHTML="Running"; id("relay1").style.backgroundColor=green; }
     else { id("relay1").innerHTML="Idle"; if (cond1==0) { id("relay1").style.backgroundColor=red; } else { id("relay1").style.backgroundColor=gray; } } }
@@ -90,12 +91,16 @@ function id(id) { return document.getElementById(id); }
 <div><div class="x1a">Voltages</div></div>
 <div><div class="x2" id="evu">EVU</div>
      <div class="x2" id="nea">NEA</div><div>
-<div><div class="x2" id="peak1"></div>
-     <div class="x2" id="peak2"></div></div>
-<div><div class="x2" id="rms1"></div>
-     <div class="x2" id="rms2"></div></div>
-<div><div class="x2" id="freq1"></div>
-     <div class="x2" id="freq2"></div></div>
+<div><div class="x2"><table>
+     <tr><td id="peak1"></td><td class="left">&nbsp;Vpeak</td></tr>
+     <tr><td id="rms1"></td><td class="left">&nbsp;Vrms</td></tr>
+     <tr><td id="freq1"></td><td class="left">&nbsp;Hz</td></tr>
+     </table></div>
+     <div class="x2"><table>
+     <tr><td id="peak2"></td><td class="left">&nbsp;Vpeak</td></tr>
+     <tr><td id="rms2"></td><td class="left">&nbsp;Vrms</td></tr>
+     <tr><td id="freq2"></td><td class="left">&nbsp;Hz</td></tr>
+     </table></div></div>
 <div><div class="x1a">Remote Switches</div></div>
 <div><div class="x2" id="relay1"></div>
      <div class="x2" id="relay2"></div></div>
