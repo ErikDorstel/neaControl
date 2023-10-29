@@ -54,6 +54,7 @@ void initMeasure() {
   if (!ads1115.begin()) { Serial.println("Failed to initialize ADS1115."); }
   ads1115.setGain(GAIN_TWO); ads1115.setDataRate(RATE_ADS1115_860SPS);
   pinMode(adcAlert,INPUT);
+  readCalibration();
   resetMeasure(); }
 
 void measureWorker() {
@@ -69,8 +70,8 @@ void measureWorker() {
     if (measure.rawCur<-1000 && measure.polarity>=0) { measure.polarity=-1; } }
 
   if (millis()>=measure.timer) {
-    double voltagePeak=(ads1115.computeVolts(measure.rawMax)-ads1115.computeVolts(measure.rawMin))*121;
-    double voltageRMS=ads1115.computeVolts(measure.rawSum/measure.counter)*295;
+    double voltagePeak=(ads1115.computeVolts(measure.rawMax)-ads1115.computeVolts(measure.rawMin))*calibration.peak[measure.channel];
+    double voltageRMS=ads1115.computeVolts(measure.rawSum/measure.counter)*calibration.rms[measure.channel];
     double voltageFrequency=0; if (measure.phases>2) { voltageFrequency=1000000/((double)measure.phaseDuration/(measure.phases-2)); }
     if (debug) {
       Serial.print("Voltage Chan: " + String(measure.channel) + ", ");

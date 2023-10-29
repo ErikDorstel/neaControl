@@ -8,6 +8,7 @@ uint8_t ethDNS[]={192,168,100,1};
 uint8_t ethNM[]={255,255,255,0};
 
 #include "relay.h"
+#include "calibration.h"
 #include "measure.h"
 #include "Eth.h"
 #include "HTTPServer.h"
