@@ -30,17 +30,28 @@ td     { text-align:right; padding:0.2em 0em; }
 
 function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
-  peak1=0; rms1=0; freq1=0; cond1=0; peak2=0; rms2=0; freq2=0; cond2=0; relay1=0; relay2=0; locked=1; doDisplay();
+  peak1=0; rms1=0; freq1=0; cond1=0; time1=0; peak2=0; rms2=0; freq2=0; cond2=0; time2=0; relay1=0; relay2=0; locked=1; doDisplay();
   getStatus(); window.setInterval("getStatus();",10000); setLogoutTimer(); }
 
 function doDisplay() {
-  if (cond1==0) { id("evu").style.backgroundColor=red; } else { id("evu").style.backgroundColor=green; }
+  if (cond1==0) { id("evu").style.backgroundColor=red; }
+  else { if (time1>=30) { id("evu").style.backgroundColor=green; } else { id("evu").style.backgroundColor=yellow; } }
 
   if (cond2==0) { if (cond1==0) { id("nea").style.backgroundColor=red; } else { id("nea").style.backgroundColor=gray; } }
-  else { id("nea").style.backgroundColor=green; }
+  else { if (time2>=30) { id("nea").style.backgroundColor=green; } else { id("nea").style.backgroundColor=yellow; } }
 
   id("peak1").innerHTML=peak1; id("rms1").innerHTML=rms1; id("freq1").innerHTML=freq1;
   id("peak2").innerHTML=peak2; id("rms2").innerHTML=rms2; id("freq2").innerHTML=freq2;
+
+  if (time1>86400) { id("time1").innerHTML=Math.floor(time1/86400); id("unit1").innerHTML="&nbsp;days"; }
+  else if (time1>3600) { id("time1").innerHTML=Math.floor(time1/3600); id("unit1").innerHTML="&nbsp;hours"; }
+  else if (time1>60) { id("time1").innerHTML=Math.floor(time1/60); id("unit1").innerHTML="&nbsp;min."; }
+  else { id("time1").innerHTML=time1; id("unit1").innerHTML="&nbsp;sec."; }
+
+  if (time2>86400) { id("time2").innerHTML=Math.floor(time2/86400); id("unit2").innerHTML="&nbsp;days"; }
+  else if (time2>3600) { id("time2").innerHTML=Math.floor(time2/3600); id("unit2").innerHTML="&nbsp;hours"; }
+  else if (time2>60) { id("time2").innerHTML=Math.floor(time2/60); id("unit2").innerHTML="&nbsp;min."; }
+  else { id("time2").innerHTML=time2; id("unit2").innerHTML="&nbsp;sec."; }
 
   if (relay1==0) { if (cond2==1) { id("relay1").innerHTML="Running"; id("relay1").style.backgroundColor=green; }
     else { id("relay1").innerHTML="Idle"; if (cond1==0) { id("relay1").style.backgroundColor=red; } else { id("relay1").style.backgroundColor=gray; } } }
@@ -74,8 +85,9 @@ function replyAJAX(event) {
     if (event.target.url=="getVoltage") {
       peak1=event.target.responseText.split(",")[0]; rms1=event.target.responseText.split(",")[1];
       freq1=event.target.responseText.split(",")[2]; cond1=event.target.responseText.split(",")[3];
-      peak2=event.target.responseText.split(",")[4]; rms2=event.target.responseText.split(",")[5];
-      freq2=event.target.responseText.split(",")[6]; cond2=event.target.responseText.split(",")[7]; doDisplay(); }
+      time1=event.target.responseText.split(",")[4]*1; peak2=event.target.responseText.split(",")[5];
+      rms2=event.target.responseText.split(",")[6]; freq2=event.target.responseText.split(",")[7];
+      cond2=event.target.responseText.split(",")[8]; time2=event.target.responseText.split(",")[9]*1; doDisplay(); }
     else if (event.target.url=="getRelay" || event.target.url.startsWith("setRelay")) {
       relay1=event.target.responseText.split(",")[0]; relay2=event.target.responseText.split(",")[1]; doDisplay(); } } }
 
@@ -95,11 +107,13 @@ function id(id) { return document.getElementById(id); }
      <tr><td id="peak1"></td><td class="left">&nbsp;Vpeak</td></tr>
      <tr><td id="rms1"></td><td class="left">&nbsp;Vrms</td></tr>
      <tr><td id="freq1"></td><td class="left">&nbsp;Hz</td></tr>
+     <tr><td id="time1"></td><td class="left" id="unit1"></td></tr>
      </table></div>
      <div class="x2"><table>
      <tr><td id="peak2"></td><td class="left">&nbsp;Vpeak</td></tr>
      <tr><td id="rms2"></td><td class="left">&nbsp;Vrms</td></tr>
      <tr><td id="freq2"></td><td class="left">&nbsp;Hz</td></tr>
+     <tr><td id="time2"></td><td class="left" id="unit2"></td></tr>
      </table></div></div>
 <div><div class="x1a">Remote Switches</div></div>
 <div><div class="x2" id="relay1"></div>

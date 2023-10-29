@@ -6,14 +6,16 @@ String httpServerRequest(String request) {
   if (request.indexOf("/getChallenge")>=0) { response=String(random(1000000000)); challenge=response; challengeTimer=millis(); }
 
   else if (request.indexOf("/getVoltage")>=0) {
-    response+=String(voltage.peak[0],2) + ",";
-    response+=String(voltage.rms[0],2) + ",";
-    response+=String(voltage.frequency[0],2) + ",";
+    response+=String(voltage.peak[0],1) + ",";
+    response+=String(voltage.rms[0],1) + ",";
+    response+=String(voltage.frequency[0],1) + ",";
     response+=String(voltage.condition[0]) + ",";
-    response+=String(voltage.peak[1],2) + ",";
-    response+=String(voltage.rms[1],2) + ",";
-    response+=String(voltage.frequency[1],2) + ",";
-    response+=String(voltage.condition[1]); }
+    response+=String((millis()-voltage.timer[0])/1000) + ",";
+    response+=String(voltage.peak[1],1) + ",";
+    response+=String(voltage.rms[1],1) + ",";
+    response+=String(voltage.frequency[1],1) + ",";
+    response+=String(voltage.condition[1]) + ",";
+    response+=String((millis()-voltage.timer[1])/1000); }
 
   else if (request.indexOf("/getRelay")>=0) {
     response+=String(relay.state[0]) + ",";

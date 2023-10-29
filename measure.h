@@ -41,7 +41,8 @@ struct voltageStruct {
   double peak[2];
   double rms[2];
   double frequency[2];
-  bool condition[2]; } voltage;
+  bool condition[2];
+  uint64_t timer[2]; } voltage;
 
 void initMeasure() {
 
@@ -81,6 +82,8 @@ void measureWorker() {
       voltage.peak[measure.channel]=voltagePeak;
       voltage.rms[measure.channel]=voltageRMS;
       voltage.frequency[measure.channel]=voltageFrequency;
-      if (voltagePeak>300 && voltagePeak<350 && voltageRMS>210 && voltageRMS<250 && voltageFrequency>48 && voltageFrequency<52) { voltage.condition[measure.channel]=true; } else { voltage.condition[measure.channel]=false; }
+      if (voltagePeak>300 && voltagePeak<350 && voltageRMS>210 && voltageRMS<250 && voltageFrequency>48 && voltageFrequency<52) {
+        if (voltage.condition[measure.channel]==false) { voltage.timer[measure.channel]=millis(); } voltage.condition[measure.channel]=true; }
+      else { if (voltage.condition[measure.channel]==true) { voltage.timer[measure.channel]=millis(); } voltage.condition[measure.channel]=false; }
       if (measure.channel==0) { measure.channel=1; } else { measure.channel=0; } }
     resetMeasure(); } }
