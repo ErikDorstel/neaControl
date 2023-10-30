@@ -49,6 +49,8 @@ String httpServerRequest(String request) {
 
   else if (request.indexOf("/defaultCalibration")>=0) { defaultCalibration(); }
 
+  else if (request.indexOf("/readCalibration")>=0) { readCalibration(); }
+
   else if (request.indexOf("/writeCalibration")>=0) { writeCalibration(); }
 
   else if (request.indexOf("/config/" + String(secret^challenge.toInt()) + "/")>=0 && millis()<challengeTimer+2000) { response=config_html; }

@@ -57,16 +57,19 @@ function doDisplay() {
   if (locked==0) { id("locked").innerHTML="Unlocked"; id("locked").style.backgroundColor=gray; id("lock").innerHTML="Lock"; }
   else { id("locked").innerHTML="Locked"; id("locked").style.backgroundColor=blue; id("lock").innerHTML="Unlock"; }
 
-  if (changed==0) { id("changed").style.backgroundColor=gray; } else { id("changed").style.backgroundColor=yellow; } }
+  if (changed==0) { id("changed1").style.backgroundColor=gray; id("changed2").style.backgroundColor=gray; }
+  else { id("changed1").style.backgroundColor=yellow; id("changed2").style.backgroundColor=yellow; } }
 
 function getStatus() { requestAJAX("getCalibration"); requestAJAX("getVoltage"); }
 
 function doCalibrate(channel) { if (locked==0) { setLock();
-  if (channel==1 && peak1>10 && rms1>10) { peakCal1=peakCal1/peak1*325; rmsCal1=rmsCal1/rms1*230; changed=1; doDisplay(); }
-  if (channel==2 && peak2>10 && rms2>10) { peakCal2=peakCal2/peak2*325; rmsCal2=rmsCal2/rms2*230; changed=1; doDisplay(); }
+  if (channel==1 && peak1>50 && rms1>50) { peakCal1=peakCal1/peak1*325; rmsCal1=rmsCal1/rms1*230; changed=1; doDisplay(); }
+  if (channel==2 && peak2>50 && rms2>50) { peakCal2=peakCal2/peak2*325; rmsCal2=rmsCal2/rms2*230; changed=1; doDisplay(); }
   requestAJAX("setCalibration"+","+peakCal1+","+rmsCal1+","+peakCal2+","+rmsCal2); setStatusTimer(); } }
 
 function doDefault() { if (locked==0) { setLock(); requestAJAX("defaultCalibration"); changed=1; doDisplay(); setStatusTimer(); } }
+
+function doUndo() { if (locked==0) { setLock(); requestAJAX("readCalibration"); changed=0; doDisplay(); setStatusTimer(); } }
 
 function doSave() { if (locked==0) { setLock(); requestAJAX("writeCalibration"); changed=0; doDisplay(); } }
 
@@ -122,8 +125,10 @@ function id(id) { return document.getElementById(id); }
      <div class="x2" onclick="doCalibrate(2);"><span class="but">Calibrate</span></div></div>
 <div><div class="x1b" id="locked"></div></div>
 <div><div class="x1b" onclick="toggleLock();"><span class="but" id="lock"></span></div></div>
-<div><div class="x2" onclick="doDefault();"><span class="but">Default</span></div>
-     <div class="x2" onclick="doSave();" id="changed"><span class="but">Save</span></div></div>
+<div><div class="x1a">Configuration</div></div>
+<div><div class="x3" onclick="doDefault();"><span class="but">Default</span></div>
+     <div class="x3" onclick="doUndo();" id="changed1"><span class="but">Undo</span></div>
+     <div class="x3" onclick="doSave();" id="changed2"><span class="but">Save</span></div></div>
 </div>
 
 </body></html>
