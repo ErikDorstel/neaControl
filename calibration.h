@@ -25,8 +25,8 @@ void writeCalibration() {
   flash.end();
   readCalibration(); }
 
-void resetCalibration() {
-  if (debug) { Serial.println("Calibration Reset"); }
+void defaultCalibration() {
+  if (debug) { Serial.println("Calibration Default"); }
   calibration.peak[0]=calibration.peakDefault;
   calibration.rms[0]=calibration.rmsDefault;
   calibration.peak[1]=calibration.peakDefault;

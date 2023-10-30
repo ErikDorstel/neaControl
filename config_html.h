@@ -32,7 +32,7 @@ function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
   peak1=0; rms1=0; freq1=0; cond1=0; time1=0; peak2=0; rms2=0; freq2=0; cond2=0; time2=0;
   peakCal1=0; rmsCal1=0; peakCal2=0; rmsCal2=0; locked=1; changed=0; doDisplay();
-  getStatus(); setStatusTimer(); setLogoutTimer(); }
+  setStatusTimer(); setLogoutTimer(); }
 
 function doDisplay() {
   if (cond1==0) { id("evu").style.backgroundColor=red; }
@@ -64,13 +64,13 @@ function getStatus() { requestAJAX("getCalibration"); requestAJAX("getVoltage");
 function doCalibrate(channel) { if (locked==0) { setLock();
   if (channel==1 && peak1>10 && rms1>10) { peakCal1=peakCal1/peak1*325; rmsCal1=rmsCal1/rms1*230; changed=1; doDisplay(); }
   if (channel==2 && peak2>10 && rms2>10) { peakCal2=peakCal2/peak2*325; rmsCal2=rmsCal2/rms2*230; changed=1; doDisplay(); }
-  requestAJAX("setCalibration"+","+peakCal1+","+rmsCal1+","+peakCal2+","+rmsCal2); getStatus(); setStatusTimer(); } }
+  requestAJAX("setCalibration"+","+peakCal1+","+rmsCal1+","+peakCal2+","+rmsCal2); setStatusTimer(); } }
 
-function doReset() { if (locked==0) { setLock(); requestAJAX("resetCalibration"); changed=1; doDisplay(); getStatus(); setStatusTimer(); } }
+function doDefault() { if (locked==0) { setLock(); requestAJAX("defaultCalibration"); changed=1; doDisplay(); setStatusTimer(); } }
 
 function doSave() { if (locked==0) { setLock(); requestAJAX("writeCalibration"); changed=0; doDisplay(); } }
 
-function setStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } statusTimer=window.setInterval("getStatus();",10000); }
+function setStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } statusTimer=window.setInterval("getStatus();",10000); getStatus(); }
 function toggleLock() { if (locked==0) { locked=1; } else { locked=0; setLockTimer(); setLogoutTimer(); } doDisplay(); }
 function setLockTimer() { if (typeof lockTimer!=='undefined' ) { window.clearTimeout(lockTimer); } lockTimer=window.setTimeout("setLock();",2000); }
 function setLock() { locked=1; doDisplay(); }
@@ -122,8 +122,8 @@ function id(id) { return document.getElementById(id); }
      <div class="x2" onclick="doCalibrate(2);"><span class="but">Calibrate</span></div></div>
 <div><div class="x1b" id="locked"></div></div>
 <div><div class="x1b" onclick="toggleLock();"><span class="but" id="lock"></span></div></div>
-<div><div class="x2" onclick="doReset();"><span class="but">Reset</span></div>
-     <div class="x2" id="changed" onclick="doSave();"><span class="but">Save</span></div></div>
+<div><div class="x2" onclick="doDefault();"><span class="but">Default</span></div>
+     <div class="x2" onclick="doSave();" id="changed"><span class="but">Save</span></div></div>
 </div>
 
 </body></html>

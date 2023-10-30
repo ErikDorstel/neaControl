@@ -47,7 +47,7 @@ String httpServerRequest(String request) {
       calibration.peak[1]=request.substring(c,d-1).toFloat();
       calibration.rms[1]=request.substring(d).toFloat(); } }
 
-  else if (request.indexOf("/resetCalibration")>=0) { resetCalibration(); }
+  else if (request.indexOf("/defaultCalibration")>=0) { defaultCalibration(); }
 
   else if (request.indexOf("/writeCalibration")>=0) { writeCalibration(); }
 

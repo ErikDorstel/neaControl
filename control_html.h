@@ -31,7 +31,7 @@ td     { text-align:right; padding:0.2em 0em; }
 function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
   peak1=0; rms1=0; freq1=0; cond1=0; time1=0; peak2=0; rms2=0; freq2=0; cond2=0; time2=0; relay1=0; relay2=0; locked=1; doDisplay();
-  getStatus(); setStatusTimer(); setLogoutTimer(); }
+  setStatusTimer(); setLogoutTimer(); }
 
 function doDisplay() {
   if (cond1==0) { id("evu").style.backgroundColor=red; }
@@ -65,7 +65,7 @@ function doDisplay() {
 
 function getStatus() { requestAJAX("getVoltage"); requestAJAX("getRelay"); }
 
-function setStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } statusTimer=window.setInterval("getStatus();",10000); }
+function setStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } statusTimer=window.setInterval("getStatus();",10000); getStatus(); }
 function toggleRelay1() { if (locked==0) { setLock(); if (relay1==0) { requestAJAX("setRelay,0,1"); setRelay1Timer(); } else { requestAJAX("setRelay,0,0"); } } }
 function setRelay1Timer() { if (typeof relay1Timer!=='undefined' ) { window.clearTimeout(relay1Timer); } relay1Timer=window.setTimeout("unsetRelay1();",2000); }
 function unsetRelay1() { requestAJAX("setRelay,0,0"); }
