@@ -13,7 +13,7 @@ html   { font-family:Arial; }
 div    { background-color:#e0e0e0; color:#000000; border:0px; padding:0px; margin:0px; text-align:center; width:100%; user-select:none; display:inline-block; }
 select { background-color:#f0f0f0; color:#000000; font-size:1.0em; border:0px; padding:0px; margin:0px; }
 table  { margin-left:auto; margin-right:auto; }
-td     { text-align:right; }
+td     { text-align:right; padding:0.2em 0em; }
 .x0a   { background-color:#c2d5ed; padding:0.2em 0em 0.1em; width:100%; font-size:1.5em; }
 .x0b   { background-color:#c2d5ed; padding:0.1em 0em 0.2em; width:100%; font-size:1.2em; }
 .x0    { background-color:#c2d5ed; padding:0.3em 0em; width:100%; font-size:1.4em; }
@@ -24,6 +24,7 @@ td     { text-align:right; }
 .x4    { background-color:#e0e0e0; padding:0.3em 0em; width:24%; font-size:1.4em; }
 .x5    { background-color:#e0e0e0; padding:0.3em 0em; width:19%; font-size:1.4em; }
 .but   { background-color:#f0f0f0; padding:0.1em 0.4em; }
+.left  { text-align:left; padding:0.2em 0em; }
 </style>
 <script>
 
@@ -47,7 +48,9 @@ function requestAJAX(value) {
 
 function replyAJAX(event) {
   if (event.target.status==200) {
-    if (event.target.url=="getChallenge") { challenge=event.target.responseText.split(",")[0]; location.replace('/'+String(secret^challenge)+"/"); } } }
+    if (event.target.url=="getChallenge") { challenge=event.target.responseText.split(",")[0];
+      if (location.pathname.includes("/config")) { location.replace("/config/"+String(secret^challenge)+"/"); }
+      else { location.replace("/"+String(secret^challenge)+"/"); } } } }
 
 function mapValue(value,inMin,inMax,outMin,outMax) { return (value-inMin)*(outMax-outMin)/(inMax-inMin)+outMin; }
 function id(id) { return document.getElementById(id); }

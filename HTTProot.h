@@ -28,11 +28,32 @@ String httpServerRequest(String request) {
       if (channel==0 && state==1 && voltage.condition[1]==1 && checkCondition==true) { allowed=false; }
       if (channel==1 && state==0 && voltage.condition[0]==0 && checkCondition==true) { allowed=false; }
       if (channel==1 && state==1 && voltage.condition[1]==0 && checkCondition==true) { allowed=false; }
+      if (debug && (!allowed)) { Serial.println("Relay State not allowed"); }
       if (allowed) { setRelay(channel,state); } }
     response+=String(relay.state[0]) + ",";
     response+=String(relay.state[1]); }
 
-  else if (request.indexOf("/" + String(secret^challenge.toInt()) + "/")>=0 && millis()<challengeTimer+10000) { response=control_html; }
+  else if (request.indexOf("/getCalibration")>=0) {
+    response+=String(calibration.peak[0],4) + ",";
+    response+=String(calibration.rms[0],4) + ",";
+    response+=String(calibration.peak[1],4) + ",";
+    response+=String(calibration.rms[1],4); }
+
+  else if (request.indexOf("/setCalibration")>=0) {
+    int a=request.indexOf(",")+1; int b=request.indexOf(",",a)+1; int c=request.indexOf(",",b)+1; int d=request.indexOf(",",c)+1;
+    if (a>0 && b>0 && c>0 && d>0) {
+      calibration.peak[0]=request.substring(a,b-1).toFloat();
+      calibration.rms[0]=request.substring(b,c-1).toFloat();
+      calibration.peak[1]=request.substring(c,d-1).toFloat();
+      calibration.rms[1]=request.substring(d).toFloat(); } }
+
+  else if (request.indexOf("/resetCalibration")>=0) { resetCalibration(); }
+
+  else if (request.indexOf("/writeCalibration")>=0) { writeCalibration(); }
+
+  else if (request.indexOf("/config/" + String(secret^challenge.toInt()) + "/")>=0 && millis()<challengeTimer+2000) { response=config_html; }
+
+  else if (request.indexOf("/" + String(secret^challenge.toInt()) + "/")>=0 && millis()<challengeTimer+2000) { response=control_html; }
 
   else { response=index_html; }
 

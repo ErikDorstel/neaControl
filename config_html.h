@@ -1,4 +1,4 @@
-const char *control_html=R"(
+const char *config_html=R"(
 
 <!DOCTYPE html>
 <html lang="en"><head>
@@ -30,7 +30,8 @@ td     { text-align:right; padding:0.2em 0em; }
 
 function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
-  peak1=0; rms1=0; freq1=0; cond1=0; time1=0; peak2=0; rms2=0; freq2=0; cond2=0; time2=0; relay1=0; relay2=0; locked=1; doDisplay();
+  peak1=0; rms1=0; freq1=0; cond1=0; time1=0; peak2=0; rms2=0; freq2=0; cond2=0; time2=0;
+  peakCal1=0; rmsCal1=0; peakCal2=0; rmsCal2=0; locked=1; changed=0; doDisplay();
   getStatus(); setStatusTimer(); setLogoutTimer(); }
 
 function doDisplay() {
@@ -53,23 +54,23 @@ function doDisplay() {
   else if (time2>=60) { id("time2").innerHTML=Math.floor(time2/60); id("unit2").innerHTML="&nbsp;min."; }
   else { id("time2").innerHTML=time2; id("unit2").innerHTML="&nbsp;sec."; }
 
-  if (relay1==0) { if (cond2==1) { id("relay1").innerHTML="Running"; id("relay1").style.backgroundColor=green; }
-    else { id("relay1").innerHTML="Idle"; if (cond1==0) { id("relay1").style.backgroundColor=red; } else { id("relay1").style.backgroundColor=gray; } } }
-  else { id("relay1").innerHTML="Starting"; id("relay1").style.backgroundColor=yellow; }
-
-  if (relay2==0) { id("relay2").innerHTML="Idle"; if (cond1==0) { id("relay2").style.backgroundColor=red; } else { id("relay2").style.backgroundColor=gray; } }
-  else { id("relay2").innerHTML="Active"; if (cond2==0) { id("relay2").style.backgroundColor=red; } else { id("relay2").style.backgroundColor=green; } }
-
   if (locked==0) { id("locked").innerHTML="Unlocked"; id("locked").style.backgroundColor=gray; id("lock").innerHTML="Lock"; }
-  else { id("locked").innerHTML="Locked"; id("locked").style.backgroundColor=blue; id("lock").innerHTML="Unlock"; } }
+  else { id("locked").innerHTML="Locked"; id("locked").style.backgroundColor=blue; id("lock").innerHTML="Unlock"; }
 
-function getStatus() { requestAJAX("getVoltage"); requestAJAX("getRelay"); }
+  if (changed==0) { id("changed").style.backgroundColor=gray; } else { id("changed").style.backgroundColor=yellow; } }
+
+function getStatus() { requestAJAX("getCalibration"); requestAJAX("getVoltage"); }
+
+function doCalibrate(channel) { if (locked==0) { setLock();
+  if (channel==1 && peak1>10 && rms1>10) { peakCal1=peakCal1/peak1*325; rmsCal1=rmsCal1/rms1*230; changed=1; doDisplay(); }
+  if (channel==2 && peak2>10 && rms2>10) { peakCal2=peakCal2/peak2*325; rmsCal2=rmsCal2/rms2*230; changed=1; doDisplay(); }
+  requestAJAX("setCalibration"+","+peakCal1+","+rmsCal1+","+peakCal2+","+rmsCal2); getStatus(); setStatusTimer(); } }
+
+function doReset() { if (locked==0) { setLock(); requestAJAX("resetCalibration"); changed=1; doDisplay(); getStatus(); setStatusTimer(); } }
+
+function doSave() { if (locked==0) { setLock(); requestAJAX("writeCalibration"); changed=0; doDisplay(); } }
 
 function setStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } statusTimer=window.setInterval("getStatus();",10000); }
-function toggleRelay1() { if (locked==0) { setLock(); if (relay1==0) { requestAJAX("setRelay,0,1"); setRelay1Timer(); } else { requestAJAX("setRelay,0,0"); } } }
-function setRelay1Timer() { if (typeof relay1Timer!=='undefined' ) { window.clearTimeout(relay1Timer); } relay1Timer=window.setTimeout("unsetRelay1();",2000); }
-function unsetRelay1() { requestAJAX("setRelay,0,0"); }
-function toggleRelay2() { if (locked==0) { setLock(); if (relay2==0) { requestAJAX("setRelay,1,1"); } else { requestAJAX("setRelay,1,0"); } } }
 function toggleLock() { if (locked==0) { locked=1; } else { locked=0; setLockTimer(); setLogoutTimer(); } doDisplay(); }
 function setLockTimer() { if (typeof lockTimer!=='undefined' ) { window.clearTimeout(lockTimer); } lockTimer=window.setTimeout("setLock();",2000); }
 function setLock() { locked=1; doDisplay(); }
@@ -89,8 +90,9 @@ function replyAJAX(event) {
       time1=event.target.responseText.split(",")[4]*1; peak2=event.target.responseText.split(",")[5]*1;
       rms2=event.target.responseText.split(",")[6]*1; freq2=event.target.responseText.split(",")[7];
       cond2=event.target.responseText.split(",")[8]; time2=event.target.responseText.split(",")[9]*1; doDisplay(); }
-    else if (event.target.url=="getRelay" || event.target.url.startsWith("setRelay")) {
-      relay1=event.target.responseText.split(",")[0]; relay2=event.target.responseText.split(",")[1]; doDisplay(); } } }
+    else if (event.target.url=="getCalibration") {
+      peakCal1=event.target.responseText.split(",")[0]*1; rmsCal1=event.target.responseText.split(",")[1]*1;
+      peakCal2=event.target.responseText.split(",")[2]*1; rmsCal2=event.target.responseText.split(",")[3]*1; doDisplay(); } } }
 
 function mapValue(value,inMin,inMax,outMin,outMax) { return (value-inMin)*(outMax-outMin)/(inMax-inMin)+outMin; }
 function id(id) { return document.getElementById(id); }
@@ -116,13 +118,12 @@ function id(id) { return document.getElementById(id); }
      <tr><td id="freq2"></td><td class="left">&nbsp;Hz</td></tr>
      <tr><td id="time2"></td><td class="left" id="unit2"></td></tr>
      </table></div></div>
-<div><div class="x1a">Remote Switches</div></div>
-<div><div class="x2" id="relay1"></div>
-     <div class="x2" id="relay2"></div></div>
-<div><div class="x2" onclick="toggleRelay1();"><span class="but">Start Engine</span></div>
-     <div class="x2" onclick="toggleRelay2();"><span class="but">Switchover</span></div></div>
+<div><div class="x2" onclick="doCalibrate(1);"><span class="but">Calibrate</span></div>
+     <div class="x2" onclick="doCalibrate(2);"><span class="but">Calibrate</span></div></div>
 <div><div class="x1b" id="locked"></div></div>
 <div><div class="x1b" onclick="toggleLock();"><span class="but" id="lock"></span></div></div>
+<div><div class="x2" onclick="doReset();"><span class="but">Reset</span></div>
+     <div class="x2" id="changed" onclick="doSave();"><span class="but">Save</span></div></div>
 </div>
 
 </body></html>
