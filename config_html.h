@@ -85,14 +85,14 @@ function requestAJAX(value) {
 function replyAJAX(event) {
   if (event.target.status==200) {
     if (event.target.url=="getVoltage") {
-      peak1=event.target.responseText.split(",")[0]*1; rms1=event.target.responseText.split(",")[1]*1;
+      peak1=event.target.responseText.split(",")[0]; rms1=event.target.responseText.split(",")[1];
       freq1=event.target.responseText.split(",")[2]; cond1=event.target.responseText.split(",")[3];
-      time1=event.target.responseText.split(",")[4]*1; peak2=event.target.responseText.split(",")[5]*1;
-      rms2=event.target.responseText.split(",")[6]*1; freq2=event.target.responseText.split(",")[7];
-      cond2=event.target.responseText.split(",")[8]; time2=event.target.responseText.split(",")[9]*1; doDisplay(); }
+      time1=event.target.responseText.split(",")[4]; peak2=event.target.responseText.split(",")[5];
+      rms2=event.target.responseText.split(",")[6]; freq2=event.target.responseText.split(",")[7];
+      cond2=event.target.responseText.split(",")[8]; time2=event.target.responseText.split(",")[9]; doDisplay(); }
     else if (event.target.url=="getCalibration") {
-      peakCal1=event.target.responseText.split(",")[0]*1; rmsCal1=event.target.responseText.split(",")[1]*1;
-      peakCal2=event.target.responseText.split(",")[2]*1; rmsCal2=event.target.responseText.split(",")[3]*1; doDisplay(); } } }
+      peakCal1=event.target.responseText.split(",")[0]; rmsCal1=event.target.responseText.split(",")[1];
+      peakCal2=event.target.responseText.split(",")[2]; rmsCal2=event.target.responseText.split(",")[3]; doDisplay(); } } }
 
 function mapValue(value,inMin,inMax,outMin,outMax) { return (value-inMin)*(outMax-outMin)/(inMax-inMin)+outMin; }
 function id(id) { return document.getElementById(id); }
