@@ -31,7 +31,7 @@ td     { text-align:right; padding:0.2em 0em; }
 function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
   peak1=0; rms1=0; freq1=0; cond1=0; time1=0; peak2=0; rms2=0; freq2=0; cond2=0; time2=0;
-  peakCal1=0; rmsCal1=0; peakCal2=0; rmsCal2=0; locked=1; changed=0; doDisplay();
+  peakCal1=0; rmsCal1=0; peakCal2=0; rmsCal2=0; changed=0; locked=1; doDisplay();
   setStatusTimer(); setLogoutTimer(); }
 
 function doDisplay() {
@@ -62,20 +62,22 @@ function doDisplay() {
 
 function getStatus() { requestAJAX("getCalibration"); requestAJAX("getVoltage"); }
 
-function doCalibrate(channel) { if (locked==0) { setLock();
+function doCalibrate(channel) { if (locked==0) { setLock(); clearStatusTimer();
   if (channel==1 && peak1>50 && rms1>50) { peakCal1=peakCal1/peak1*325; rmsCal1=rmsCal1/rms1*230; changed=1; doDisplay(); }
   if (channel==2 && peak2>50 && rms2>50) { peakCal2=peakCal2/peak2*325; rmsCal2=rmsCal2/rms2*230; changed=1; doDisplay(); }
-  requestAJAX("setCalibration"+","+peakCal1+","+rmsCal1+","+peakCal2+","+rmsCal2); setStatusTimer(); } }
+  requestAJAX("setCalibration"+","+peakCal1+","+rmsCal1+","+peakCal2+","+rmsCal2+","+changed); setStatusTimer(); } }
 
-function doDefault() { if (locked==0) { setLock(); requestAJAX("defaultCalibration"); changed=1; doDisplay(); setStatusTimer(); } }
+function doDefault() { if (locked==0) { setLock(); clearStatusTimer(); requestAJAX("defaultCalibration"); changed=1; doDisplay(); setStatusTimer(); } }
 
-function doUndo() { if (locked==0) { setLock(); requestAJAX("readCalibration"); changed=0; doDisplay(); setStatusTimer(); } }
+function doUndo() { if (locked==0) { setLock(); clearStatusTimer(); requestAJAX("readCalibration"); changed=0; doDisplay(); setStatusTimer(); } }
 
-function doSave() { if (locked==0) { setLock(); requestAJAX("writeCalibration"); changed=0; doDisplay(); } }
+function doSave() { if (locked==0) { setLock(); clearStatusTimer(); requestAJAX("writeCalibration"); changed=0; doDisplay(); setStatusTimer(); } }
 
-function setStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } statusTimer=window.setInterval("getStatus();",10000); getStatus(); }
-function toggleLock() { if (locked==0) { locked=1; } else { locked=0; setLockTimer(); setLogoutTimer(); } doDisplay(); }
+function setStatusTimer() { clearStatusTimer(); statusTimer=window.setInterval("getStatus();",10000); getStatus(); }
+function clearStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); ajaxObj["getCalibration"].abort(); } }
+function toggleLock() { if (locked==0) { setLock(); } else { unsetLock(); } }
 function setLockTimer() { if (typeof lockTimer!=='undefined' ) { window.clearTimeout(lockTimer); } lockTimer=window.setTimeout("setLock();",2000); }
+function unsetLock() { locked=0; doDisplay(); setLockTimer(); setLogoutTimer(); }
 function setLock() { locked=1; doDisplay(); }
 function setLogoutTimer() { if (typeof logoutTimer!=='undefined' ) { window.clearTimeout(logoutTimer); } logoutTimer=window.setTimeout("doLogout();",5*60000); }
 function doLogout() { location.reload(); }
@@ -95,7 +97,8 @@ function replyAJAX(event) {
       cond2=event.target.responseText.split(",")[8]; time2=event.target.responseText.split(",")[9]; doDisplay(); }
     else if (event.target.url=="getCalibration") {
       peakCal1=event.target.responseText.split(",")[0]; rmsCal1=event.target.responseText.split(",")[1];
-      peakCal2=event.target.responseText.split(",")[2]; rmsCal2=event.target.responseText.split(",")[3]; doDisplay(); } } }
+      peakCal2=event.target.responseText.split(",")[2]; rmsCal2=event.target.responseText.split(",")[3];
+      changed=event.target.responseText.split(",")[4]; doDisplay(); } } }
 
 function mapValue(value,inMin,inMax,outMin,outMax) { return (value-inMin)*(outMax-outMin)/(inMax-inMin)+outMin; }
 function id(id) { return document.getElementById(id); }

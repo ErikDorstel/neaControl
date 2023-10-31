@@ -65,13 +65,15 @@ function doDisplay() {
 
 function getStatus() { requestAJAX("getVoltage"); requestAJAX("getRelay"); }
 
-function setStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } statusTimer=window.setInterval("getStatus();",10000); getStatus(); }
+function setStatusTimer() { clearStatusTimer(); statusTimer=window.setInterval("getStatus();",10000); getStatus(); }
+function clearStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } }
 function toggleRelay1() { if (locked==0) { setLock(); if (relay1==0) { requestAJAX("setRelay,0,1"); setRelay1Timer(); } else { requestAJAX("setRelay,0,0"); } } }
 function setRelay1Timer() { if (typeof relay1Timer!=='undefined' ) { window.clearTimeout(relay1Timer); } relay1Timer=window.setTimeout("unsetRelay1();",2000); }
 function unsetRelay1() { requestAJAX("setRelay,0,0"); }
 function toggleRelay2() { if (locked==0) { setLock(); if (relay2==0) { requestAJAX("setRelay,1,1"); } else { requestAJAX("setRelay,1,0"); } } }
-function toggleLock() { if (locked==0) { locked=1; } else { locked=0; setLockTimer(); setLogoutTimer(); } doDisplay(); }
+function toggleLock() { if (locked==0) { setLock(); } else { unsetLock(); } }
 function setLockTimer() { if (typeof lockTimer!=='undefined' ) { window.clearTimeout(lockTimer); } lockTimer=window.setTimeout("setLock();",2000); }
+function unsetLock() { locked=0; doDisplay(); setLockTimer(); setLogoutTimer(); }
 function setLock() { locked=1; doDisplay(); }
 function setLogoutTimer() { if (typeof logoutTimer!=='undefined' ) { window.clearTimeout(logoutTimer); } logoutTimer=window.setTimeout("doLogout();",5*60000); }
 function doLogout() { location.reload(); }

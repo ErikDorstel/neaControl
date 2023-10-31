@@ -37,15 +37,17 @@ String httpServerRequest(String request) {
     response+=String(calibration.peak[0],4) + ",";
     response+=String(calibration.rms[0],4) + ",";
     response+=String(calibration.peak[1],4) + ",";
-    response+=String(calibration.rms[1],4); }
+    response+=String(calibration.rms[1],4) + ",";
+    response+=String(calibration.changed); }
 
   else if (request.indexOf("/setCalibration")>=0) {
-    int a=request.indexOf(",")+1; int b=request.indexOf(",",a)+1; int c=request.indexOf(",",b)+1; int d=request.indexOf(",",c)+1;
+    int a=request.indexOf(",")+1; int b=request.indexOf(",",a)+1; int c=request.indexOf(",",b)+1; int d=request.indexOf(",",c)+1; int e=request.indexOf(",",d)+1;
     if (a>0 && b>0 && c>0 && d>0) {
       calibration.peak[0]=request.substring(a,b-1).toFloat();
       calibration.rms[0]=request.substring(b,c-1).toFloat();
       calibration.peak[1]=request.substring(c,d-1).toFloat();
-      calibration.rms[1]=request.substring(d).toFloat(); } }
+      calibration.rms[1]=request.substring(d,e-1).toFloat();
+      calibration.changed=request.substring(e).toInt(); } }
 
   else if (request.indexOf("/defaultCalibration")>=0) { defaultCalibration(); }
 
