@@ -44,12 +44,14 @@ function doDisplay() {
   id("peak1").innerHTML=peak1; id("rms1").innerHTML=rms1; id("freq1").innerHTML=freq1;
   id("peak2").innerHTML=peak2; id("rms2").innerHTML=rms2; id("freq2").innerHTML=freq2;
 
-  if (time1>=172800) { id("time1").innerHTML=Math.floor(time1/86400); id("unit1").innerHTML="&nbsp;days"; }
+  if (time1>=63072000) { id("time1").innerHTML=Math.floor(time1/31536000); id("unit1").innerHTML="&nbsp;years"; }
+  else if (time1>=172800) { id("time1").innerHTML=Math.floor(time1/86400); id("unit1").innerHTML="&nbsp;days"; }
   else if (time1>=7200) { id("time1").innerHTML=Math.floor(time1/3600); id("unit1").innerHTML="&nbsp;hours"; }
   else if (time1>=120) { id("time1").innerHTML=Math.floor(time1/60); id("unit1").innerHTML="&nbsp;min."; }
   else { id("time1").innerHTML=time1; id("unit1").innerHTML="&nbsp;sec."; }
 
-  if (time2>=172800) { id("time2").innerHTML=Math.floor(time2/86400); id("unit2").innerHTML="&nbsp;days"; }
+  if (time2>=63072000) { id("time2").innerHTML=Math.floor(time2/31536000); id("unit2").innerHTML="&nbsp;years"; }
+  else if (time2>=172800) { id("time2").innerHTML=Math.floor(time2/86400); id("unit2").innerHTML="&nbsp;days"; }
   else if (time2>=7200) { id("time2").innerHTML=Math.floor(time2/3600); id("unit2").innerHTML="&nbsp;hours"; }
   else if (time2>=120) { id("time2").innerHTML=Math.floor(time2/60); id("unit2").innerHTML="&nbsp;min."; }
   else { id("time2").innerHTML=time2; id("unit2").innerHTML="&nbsp;sec."; }
