@@ -28,7 +28,7 @@ void resetMeasure() {
   attachInterrupt(adcAlert,newDataISR,FALLING);
   if (measure.channel==0) { ads1115.startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_0_1,true); }
   else { ads1115.startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_2_3,true); }
-  measure.timer=millis()+1000;
+  measure.timer=millis()+2000;
   measure.rawMax=0;
   measure.rawMin=0;
   measure.rawSum=0;
@@ -79,11 +79,11 @@ void measureWorker() {
       Serial.print("RMS: " + String(voltageRMS,2) + " V, ");
       Serial.print("Freq: " + String(voltageFrequency,2) + " Hz, ");
       Serial.println("Count: " + String(measure.counter)); }
-    if (measure.counter>=840) {
+    if (measure.counter>=1710) {
       voltage.peak[measure.channel]=voltagePeak;
       voltage.rms[measure.channel]=voltageRMS;
       voltage.frequency[measure.channel]=voltageFrequency;
-      if (voltagePeak>300 && voltagePeak<350 && voltageRMS>210 && voltageRMS<250 && voltageFrequency>48 && voltageFrequency<52) {
+      if (voltagePeak>300 && voltagePeak<365 && voltageRMS>210 && voltageRMS<250 && voltageFrequency>48 && voltageFrequency<52) {
         if (voltage.condition[measure.channel]==false) { voltage.timer[measure.channel]=millis(); } voltage.condition[measure.channel]=true; }
       else { if (voltage.condition[measure.channel]==true) { voltage.timer[measure.channel]=millis(); } voltage.condition[measure.channel]=false; }
       if (measure.channel==0) { measure.channel=1; } else { measure.channel=0; } }
