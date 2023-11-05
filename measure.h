@@ -25,7 +25,7 @@ void resetMeasure() {
   if (measure.counter>0) { detachInterrupt(adcAlert); }
   if (measure.channel==0) { ads1115.readADC_Differential_0_1(); }
   else { ads1115.readADC_Differential_2_3(); }
-  attachInterrupt(adcAlert,newDataISR,FALLING);
+  newData=false; attachInterrupt(adcAlert,newDataISR,FALLING);
   if (measure.channel==0) { ads1115.startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_0_1,true); }
   else { ads1115.startADCReading(ADS1X15_REG_CONFIG_MUX_DIFF_2_3,true); }
   measure.timer=millis()+2000;
