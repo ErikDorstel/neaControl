@@ -22,7 +22,7 @@ struct measureStruct {
   uint64_t phaseDuration; } measure;
 
 void resetMeasure() {
-  detachInterrupt(adcAlert);
+  if (measure.counter>0) { detachInterrupt(adcAlert); }
   if (measure.channel==0) { ads1115.readADC_Differential_0_1(); }
   else { ads1115.readADC_Differential_2_3(); }
   attachInterrupt(adcAlert,newDataISR,FALLING);
