@@ -79,11 +79,11 @@ void measureWorker() {
       Serial.print("RMS: " + String(voltageRMS,2) + " V, ");
       Serial.print("Freq: " + String(voltageFrequency,2) + " Hz, ");
       Serial.println("Count: " + String(measure.counter)); }
-    if (measure.counter>=1710) {
+    if (measure.counter>=1715) {
       voltage.peak[measure.channel]=voltagePeak;
       voltage.rms[measure.channel]=voltageRMS;
       voltage.frequency[measure.channel]=voltageFrequency;
-      if (voltagePeak>300 && voltagePeak<365 && voltageRMS>210 && voltageRMS<250 && voltageFrequency>48 && voltageFrequency<52) {
+      if (voltagePeak>=300 && voltagePeak<=365 && voltageRMS>=210 && voltageRMS<=250 && voltageFrequency>=48 && voltageFrequency<=52) {
         if (voltage.condition[measure.channel]==false) { voltage.timer[measure.channel]=millis(); } voltage.condition[measure.channel]=true; }
       else { if (voltage.condition[measure.channel]==true) { voltage.timer[measure.channel]=millis(); } voltage.condition[measure.channel]=false; }
       if (measure.channel==0) { measure.channel=1; } else { measure.channel=0; } }

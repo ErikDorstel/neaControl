@@ -13,9 +13,9 @@ void initHTTPServer() { tcpServer.begin(); }
 
 void httpServerWorker() {
   EthernetClient httpServerClient=tcpServer.available(); String header="";
-  if (httpServerClient) { String currentLine=""; uint64_t timer=millis();
+  if (httpServerClient) { String currentLine=""; uint64_t timer=millis()+requestTimeout;
     while (httpServerClient.connected()) {
-      if (millis()>timer+requestTimeout) { httpServerClient.println("Request timeout"); break; }
+      if (millis()>=timer) { httpServerClient.println("Request timeout"); break; }
       if (httpServerClient.available()) { char c=httpServerClient.read(); header+=c;
         if (c=='\n') {
           if (currentLine.length()==0) {
