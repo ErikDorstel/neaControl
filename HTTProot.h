@@ -55,6 +55,8 @@ String httpServerRequest(String request) {
 
   else if (request.indexOf("/writeCalibration")>=0) { writeCalibration(); }
 
+  else if (request.indexOf("/favicon.ico")>=0) { }
+
   else if (request.indexOf("/config/" + String(secret^challenge.toInt()) + "/")>=0 && millis()<challengeTimer+2000) { response=config_html; }
 
   else if (request.indexOf("/" + String(secret^challenge.toInt()) + "/")>=0 && millis()<challengeTimer+2000) { response=control_html; }
