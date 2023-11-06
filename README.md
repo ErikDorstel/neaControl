@@ -6,6 +6,10 @@ ESP32 based control of an emergency power system
 * measures peak voltage, rms voltage and frequency
 * Web UI
 * simple HTTP polling interface
+#### GPIO ADS1115 (I2C)
+* GPIO 21 - SDA
+* GPIO 22 - SCL
+* GPIO 25 - ALRT
 #### GPIO W5500 (SPI)
 * GPIO 23 - MOSI
 * GPIO 19 - MISO
@@ -13,9 +17,7 @@ ESP32 based control of an emergency power system
 * GPIO  5 - CS
 * GPIO 26 - INT
 * GPIO 27 - RST
-#### GPIO ADS1115 (I2C)
-* GPIO 21 - SDA
-* GPIO 22 - SCL
-* GPIO 25 - ALRT
+#### Web UI
+![IMAGE ALT TEXT HERE](documentation/webUI.png)
 #### Schematic
 ![IMAGE ALT TEXT HERE](documentation/neaControl.png)
