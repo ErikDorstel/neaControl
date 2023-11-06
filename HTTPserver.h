@@ -2,6 +2,7 @@
 // "virtual void begin(uint16_t port=0) =0;" to "virtual void begin() =0;"
 
 EthernetServer tcpServer(80);
+#define requestTimeout 500
 
 #include "index_html.h"
 #include "control_html.h"
@@ -12,8 +13,9 @@ void initHTTPServer() { tcpServer.begin(); }
 
 void httpServerWorker() {
   EthernetClient httpServerClient=tcpServer.available(); String header="";
-  if (httpServerClient) { String currentLine="";
+  if (httpServerClient) { String currentLine=""; uint64_t timer=millis();
     while (httpServerClient.connected()) {
+      if (millis()>timer+requestTimeout) { httpServerClient.println("Request timeout"); break; }
       if (httpServerClient.available()) { char c=httpServerClient.read(); header+=c;
         if (c=='\n') {
           if (currentLine.length()==0) {
@@ -31,4 +33,4 @@ void httpServerWorker() {
             break; }
           else { currentLine=""; } }
         else if (c!='\r') { currentLine+=c; } } }
-    header = ""; httpServerClient.stop(); } }
+    header=""; httpServerClient.stop(); } }
