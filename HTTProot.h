@@ -15,9 +15,7 @@ String httpServerRequest(String request) {
     response+=String(voltage.rms[1],1) + ",";
     response+=String(voltage.frequency[1],1) + ",";
     response+=String(voltage.condition[1]) + ",";
-    response+=String((millis()-voltage.timer[1])/1000); }
-
-  else if (request.indexOf("/getRelay")>=0) {
+    response+=String((millis()-voltage.timer[1])/1000) + ",";
     response+=String(relay.state[0]) + ",";
     response+=String(relay.state[1]); }
 
