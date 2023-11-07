@@ -5,7 +5,7 @@ String httpServerRequest(String request) {
 
   if (request.indexOf("/getChallenge")>=0) { response=String(random(1000000000)); challenge=response; challengeTimer=millis(); }
 
-  else if (request.indexOf("/getVoltage")>=0) {
+  else if (request.indexOf("/getStatus")>=0) {
     response+=String(voltage.peak[0],1) + ",";
     response+=String(voltage.rms[0],1) + ",";
     response+=String(voltage.frequency[0],1) + ",";

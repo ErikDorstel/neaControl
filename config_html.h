@@ -32,7 +32,7 @@ function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
   peak1=0; rms1=0; freq1=0; cond1=0; time1=0; peak2=0; rms2=0; freq2=0; cond2=0; time2=0;
   peakCal1=0; rmsCal1=0; peakCal2=0; rmsCal2=0; changed=0; locked=1; doDisplay();
-  setStatusTimer(); setLogoutTimer(); }
+  setStatusTimer(1); setLogoutTimer(); }
 
 function doDisplay() {
   if (cond1==0) { id("evu").style.backgroundColor=red; }
@@ -62,20 +62,22 @@ function doDisplay() {
   if (changed==0) { id("changed1").style.backgroundColor=gray; id("changed2").style.backgroundColor=gray; }
   else { id("changed1").style.backgroundColor=yellow; id("changed2").style.backgroundColor=yellow; } }
 
-function getStatus() { requestAJAX("getCalibration"); requestAJAX("getVoltage"); }
+function getStatus() { requestAJAX("getStatus"); requestAJAX("getCalibration"); }
 
 function doCalibrate(channel) { if (locked==0) { setLock(); clearStatusTimer();
-  if (channel==1 && peak1>50 && rms1>50) { peakCal1=peakCal1/peak1*325; rmsCal1=rmsCal1/rms1*230; changed=1; doDisplay(); }
-  if (channel==2 && peak2>50 && rms2>50) { peakCal2=peakCal2/peak2*325; rmsCal2=rmsCal2/rms2*230; changed=1; doDisplay(); }
-  requestAJAX("setCalibration"+","+peakCal1+","+rmsCal1+","+peakCal2+","+rmsCal2+","+changed); setStatusTimer(); } }
+  if (channel==1 && peak1>50 && rms1>50) { peakCal1=peakCal1/peak1*325; rmsCal1=rmsCal1/rms1*230; changed=1; peak1="325.0"; rms1="230.0"; doDisplay(); }
+  if (channel==2 && peak2>50 && rms2>50) { peakCal2=peakCal2/peak2*325; rmsCal2=rmsCal2/rms2*230; changed=1; peak2="325.0"; rms2="230.0"; doDisplay(); }
+  requestAJAX("setCalibration"+","+peakCal1+","+rmsCal1+","+peakCal2+","+rmsCal2+","+changed); setStatusTimer(0); } }
 
-function doDefault() { if (locked==0) { setLock(); clearStatusTimer(); requestAJAX("defaultCalibration"); changed=1; doDisplay(); setStatusTimer(); } }
+function doDefault() { if (locked==0) { setLock(); clearStatusTimer(); requestAJAX("defaultCalibration"); changed=1;
+  peak1="- - -"; rms1="- - -"; freq1="- - -"; peak2="- - -"; rms2="- - -"; freq2="- - -"; doDisplay(); setStatusTimer(0); } }
 
-function doUndo() { if (locked==0) { setLock(); clearStatusTimer(); requestAJAX("readCalibration"); changed=0; doDisplay(); setStatusTimer(); } }
+function doUndo() { if (locked==0) { setLock(); clearStatusTimer(); requestAJAX("readCalibration"); changed=0;
+  peak1="- - -"; rms1="- - -"; freq1="- - -"; peak2="- - -"; rms2="- - -"; freq2="- - -"; doDisplay(); setStatusTimer(0); } }
 
-function doSave() { if (locked==0) { setLock(); clearStatusTimer(); requestAJAX("writeCalibration"); changed=0; doDisplay(); setStatusTimer(); } }
+function doSave() { if (locked==0) { setLock(); clearStatusTimer(); requestAJAX("writeCalibration"); changed=0; doDisplay(); setStatusTimer(0); } }
 
-function setStatusTimer() { clearStatusTimer(); statusTimer=window.setInterval("getStatus();",10000); getStatus(); }
+function setStatusTimer(now) { clearStatusTimer(); statusTimer=window.setInterval("getStatus();",10000); if (now==1) { getStatus(); } }
 function clearStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); ajaxObj["getCalibration"].abort(); } }
 function toggleLock() { if (locked==0) { setLock(); } else { unsetLock(); } }
 function setLockTimer() { if (typeof lockTimer!=='undefined' ) { window.clearTimeout(lockTimer); } lockTimer=window.setTimeout("setLock();",2000); }
@@ -91,7 +93,7 @@ function requestAJAX(value) {
 
 function replyAJAX(event) {
   if (event.target.status==200) {
-    if (event.target.url=="getVoltage") {
+    if (event.target.url=="getStatus") {
       peak1=event.target.responseText.split(",")[0]; rms1=event.target.responseText.split(",")[1];
       freq1=event.target.responseText.split(",")[2]; cond1=event.target.responseText.split(",")[3];
       time1=event.target.responseText.split(",")[4]; peak2=event.target.responseText.split(",")[5];

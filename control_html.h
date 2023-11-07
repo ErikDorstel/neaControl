@@ -31,7 +31,7 @@ td     { text-align:right; padding:0.2em 0em; }
 function webUIinit() {
   ajaxObj=[]; red="#E09090"; green="#90E090"; yellow="#FFE460"; gray="#e0e0e0"; blue="#c2d5ed";
   peak1=0; rms1=0; freq1=0; cond1=0; time1=0; peak2=0; rms2=0; freq2=0; cond2=0; time2=0; relay1=0; relay2=0; locked=1; doDisplay();
-  setStatusTimer(); setLogoutTimer(); }
+  setStatusTimer(1); setLogoutTimer(); }
 
 function doDisplay() {
   if (cond1==0) { id("evu").style.backgroundColor=red; }
@@ -65,9 +65,9 @@ function doDisplay() {
   if (locked==0) { id("locked").innerHTML="Unlocked"; id("locked").style.backgroundColor=gray; id("lock").innerHTML="Lock"; }
   else { id("locked").innerHTML="Locked"; id("locked").style.backgroundColor=blue; id("lock").innerHTML="Unlock"; } }
 
-function getStatus() { requestAJAX("getVoltage"); }
+function getStatus() { requestAJAX("getStatus"); }
 
-function setStatusTimer() { clearStatusTimer(); statusTimer=window.setInterval("getStatus();",10000); getStatus(); }
+function setStatusTimer(now) { clearStatusTimer(); statusTimer=window.setInterval("getStatus();",10000); if (now==1) { getStatus(); } }
 function clearStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } }
 function toggleRelay1() { if (locked==0) { setLock(); if (relay1==0) { requestAJAX("setRelay,0,1"); setRelay1Timer(); } else { requestAJAX("setRelay,0,0"); } } }
 function setRelay1Timer() { if (typeof relay1Timer!=='undefined' ) { window.clearTimeout(relay1Timer); } relay1Timer=window.setTimeout("unsetRelay1();",2000); }
@@ -87,7 +87,7 @@ function requestAJAX(value) {
 
 function replyAJAX(event) {
   if (event.target.status==200) {
-    if (event.target.url=="getVoltage") {
+    if (event.target.url=="getStatus") {
       peak1=event.target.responseText.split(",")[0]; rms1=event.target.responseText.split(",")[1];
       freq1=event.target.responseText.split(",")[2]; cond1=event.target.responseText.split(",")[3];
       time1=event.target.responseText.split(",")[4]; peak2=event.target.responseText.split(",")[5];
