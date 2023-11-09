@@ -108,7 +108,7 @@ function id(id) { return document.getElementById(id); }
 <div>
 <div><div class="x1a">Voltages</div></div>
 <div><div class="x2" id="evu">EVU</div>
-     <div class="x2" id="nea">NEA</div><div>
+     <div class="x2" id="nea">NEA</div></div>
 <div><div class="x2"><table>
      <tr><td id="peak1"></td><td class="left">&nbsp;Vpeak</td></tr>
      <tr><td id="rms1"></td><td class="left">&nbsp;Vrms</td></tr>

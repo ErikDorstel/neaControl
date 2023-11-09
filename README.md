@@ -2,9 +2,13 @@
 ESP32 based control of an emergency power system
 #### Features
 * uses W5500 PHY/MAC for 100Base-T ethernet
+  * supports DHCP and static IP
 * uses ADS1115 16Bit ADC with transformer
-* measures peak voltage, rms voltage and frequency
-* Web UI
+* measures peak voltage, rms voltage and frequency from EVU and NEA
+  * EVU "Energieversorgungsunternehmen" Energy supply company
+  * NEA "Netzersatzanlage" Emergency power system
+* operational Web UI URL: http://x.x.x.x/
+* configuration Web UI URL: http://x.x.x.x/config/
 * simple HTTP polling interface
 #### GPIO ADS1115 (I2C)
 * GPIO 21 - SDA
