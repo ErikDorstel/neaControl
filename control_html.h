@@ -55,9 +55,8 @@ function doDisplay() {
   else if (time2>=120) { id("time2").innerHTML=Math.floor(time2/60); id("unit2").innerHTML="&nbsp;min."; }
   else { id("time2").innerHTML=time2; id("unit2").innerHTML="&nbsp;sec."; }
 
-  if (relay1==0) { if (cond2==1) { id("relay1").innerHTML="Running"; id("relay1").style.backgroundColor=green; }
-    else { id("relay1").innerHTML="Idle"; if (cond1==0) { id("relay1").style.backgroundColor=red; } else { id("relay1").style.backgroundColor=gray; } } }
-  else { id("relay1").innerHTML="Starting"; id("relay1").style.backgroundColor=yellow; }
+  if (relay1==0) { id("relay1").innerHTML="Idle"; if (cond1==0) { id("relay1").style.backgroundColor=red; } else { id("relay1").style.backgroundColor=gray; } }
+  else { if (cond2==0) { id("relay1").innerHTML="Starting"; id("relay1").style.backgroundColor=yellow; } else { id("relay1").innerHTML="Running"; id("relay1").style.backgroundColor=green; } }
 
   if (relay2==0) { id("relay2").innerHTML="Idle"; if (cond1==0) { id("relay2").style.backgroundColor=red; } else { id("relay2").style.backgroundColor=gray; } }
   else { id("relay2").innerHTML="Active"; if (cond2==0) { id("relay2").style.backgroundColor=red; } else { id("relay2").style.backgroundColor=green; } }
@@ -67,12 +66,12 @@ function doDisplay() {
 
 function getStatus() { requestAJAX("getStatus"); }
 
+function toggleRelay1() { if (locked==0) { setLock(); if (relay1==0) { requestAJAX("setRelay,0,1"); } else { requestAJAX("setRelay,0,0"); } } }
+
+function toggleRelay2() { if (locked==0) { setLock(); if (relay2==0) { requestAJAX("setRelay,1,1"); } else { requestAJAX("setRelay,1,0"); } } }
+
 function setStatusTimer(now) { clearStatusTimer(); statusTimer=window.setInterval("getStatus();",10000); if (now==1) { getStatus(); } }
 function clearStatusTimer() { if (typeof statusTimer!=='undefined' ) { window.clearInterval(statusTimer); } }
-function toggleRelay1() { if (locked==0) { setLock(); if (relay1==0) { requestAJAX("setRelay,0,1"); setRelay1Timer(); } else { requestAJAX("setRelay,0,0"); } } }
-function setRelay1Timer() { if (typeof relay1Timer!=='undefined' ) { window.clearTimeout(relay1Timer); } relay1Timer=window.setTimeout("unsetRelay1();",2000); }
-function unsetRelay1() { requestAJAX("setRelay,0,0"); }
-function toggleRelay2() { if (locked==0) { setLock(); if (relay2==0) { requestAJAX("setRelay,1,1"); } else { requestAJAX("setRelay,1,0"); } } }
 function toggleLock() { if (locked==0) { setLock(); } else { unsetLock(); } }
 function setLockTimer() { if (typeof lockTimer!=='undefined' ) { window.clearTimeout(lockTimer); } lockTimer=window.setTimeout("setLock();",2000); }
 function unsetLock() { locked=0; doDisplay(); setLockTimer(); setLogoutTimer(); }
@@ -124,7 +123,7 @@ function id(id) { return document.getElementById(id); }
 <div><div class="x1a">Remote Switches</div></div>
 <div><div class="x2" id="relay1"></div>
      <div class="x2" id="relay2"></div></div>
-<div><div class="x2" onclick="toggleRelay1();"><span class="but">Start Engine</span></div>
+<div><div class="x2" onclick="toggleRelay1();"><span class="but">Toggle Engine</span></div>
      <div class="x2" onclick="toggleRelay2();"><span class="but">Switchover</span></div></div>
 <div><div class="x1b" id="locked"></div></div>
 <div><div class="x1b" onclick="toggleLock();"><span class="but" id="lock"></span></div></div>
